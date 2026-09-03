@@ -1,0 +1,133 @@
+{
+  "document": {
+    "title": "2026학년도 한국외국어대학교 편입학전형",
+    "subtitle": "필답고사 문제지 (T1-1)",
+    "form": "A형",
+    "subject": "영어",
+    "duration_minutes": 60,
+    "exam_code": "T1-1",
+    "first_page_number": 1,
+    "show_header": false,
+    "show_candidate_table": false,
+    "series_title": "D-SERIES 006",
+    "series_title_every_page": true
+  },
+  "style": {
+    "font_family": "Times New Roman",
+    "font_size": 9.5,
+    "leading": 11.7,
+    "section_font_size": 9.7,
+    "margin_left_mm": 19,
+    "margin_right_mm": 19,
+    "margin_top_mm": 15,
+    "margin_bottom_mm": 16,
+    "column_gap_mm": 5,
+    "column_rule": true,
+    "question_option_gap_pt": 3.5,
+    "question_gap_pt": 8.5
+  },
+  "blocks": [
+    {
+      "type": "section",
+      "heading": "[1-4]",
+      "instruction": "Choose the one that best completes the sentence.",
+      "align": "center"
+    },
+    {
+      "type": "question",
+      "number": 1,
+      "stem": "Despite the chaos surrounding her, she maintained a remarkable [[blank:5]], responding to each crisis with steady nerves.",
+      "options": [
+        "evanescence",
+        "equanimity",
+        "animosity",
+        "futility"
+      ],
+      "options_columns": 2
+    },
+    {
+      "type": "question",
+      "number": 2,
+      "stem": "She delivered her critique in a [[blank:4]] tone, careful not to offend senior scholars.",
+      "options": [
+        "brazen",
+        "diffident",
+        "peremptory",
+        "strident"
+      ],
+      "options_columns": 2
+    },
+    {
+      "type": "section",
+      "heading": "[5-9]",
+      "instruction": "Choose the one that best replaces the underlined word.",
+      "align": "center"
+    },
+    {
+      "type": "question",
+      "number": 5,
+      "stem": "She had no [[u]]compunction[[/u]] about revealing her friend's secret to get ahead.",
+      "options": [
+        "inertia",
+        "cacophony",
+        "qualms",
+        "refinement"
+      ],
+      "options_columns": 2
+    },
+    {
+      "type": "section",
+      "heading": "[14-15]",
+      "instruction": "Choose the one that is closest in meaning to the given sentence.",
+      "align": "center"
+    },
+    {
+      "type": "question",
+      "number": 14,
+      "stem": "The company cannot afford to delay its response to climate regulations any further.",
+      "options": [
+        "The company has already responded adequately to climate regulations.",
+        "The company need not expedite its response to climate change policies.",
+        "The company must respond to climate mandates without further delay.",
+        "The company is financially incapable of responding to climate laws."
+      ],
+      "options_columns": 1
+    },
+    {
+      "type": "page_break"
+    },
+    {
+      "type": "reading",
+      "id": "reading-31-32",
+      "heading": "[31-32]",
+      "instruction": "Read the following passage and answer the questions.",
+      "align": "center",
+      "start_at_column_top": true,
+      "passage": "People often describe attention as though it were a lamp that simply illuminates whatever stands before the mind. The metaphor is useful, but it can also mislead. A lamp does not decide where to shine, whereas attention is continuously guided by expectation. When readers approach a paragraph, they do not process every mark with equal weight. They predict which ideas will matter, test those predictions against the next sentence, and revise them when the text resists an easy interpretation. What feels like passive reception is therefore an active cycle of selection and correction.\n\nThis cycle explains why background knowledge can improve comprehension without guaranteeing it. Prior knowledge supplies useful expectations, allowing a reader to connect details quickly and to recognize the likely purpose of an example. Yet the same expectations can become a trap. A familiar phrase may encourage the reader to supply a conclusion that the author never makes. Skilled reading requires a balance: predictions must be strong enough to organize the text but flexible enough to be abandoned. Evidence from the passage, rather than familiarity alone, must decide whether an interpretation survives.\n\nThe balance becomes especially important when a writer introduces contrast. Words such as however, instead, and nevertheless do more than join sentences. They signal that an earlier expectation is about to be restricted or replaced. A reader who notices only the vocabulary of individual sentences may understand each local claim and still miss the direction of the argument. By treating contrast markers as instructions for updating a mental model, the reader can preserve both speed and accuracy. The goal is not to predict less. It is to predict provisionally and to revise without reluctance.\n\nFor this reason, effective annotation should record relationships rather than decorate every difficult word. A brief note such as old view, limitation, or new claim often captures more of the argument than a long list of definitions. The best annotation is not the one containing the most ink; it is the one that makes the author's sequence of expectations visible when the reader looks back.\n\nThese habits can be practiced deliberately. Before reading, a student may turn a heading into a tentative question. During reading, the student can mark the sentence that changes the direction of the discussion. Afterward, a short summary can compare the initial prediction with the author's actual conclusion. None of these steps requires extensive notes. Their value lies in making revision visible, so that a mistaken expectation becomes evidence of learning rather than a reason to continue defending the first interpretation.",
+      "questions": [
+        {
+          "number": 31,
+          "stem": "Which of the following best states the main idea of the passage?",
+          "options": [
+            "Reading improves when every unfamiliar word is annotated in detail.",
+            "Good readers use expectations but revise them in response to textual evidence.",
+            "Background knowledge prevents readers from misunderstanding familiar phrases.",
+            "Contrast markers are useful mainly because they slow the reading process."
+          ],
+          "options_columns": 1
+        },
+        {
+          "number": 32,
+          "stem": "According to the passage, effective annotation should primarily record",
+          "options": [
+            "definitions of difficult vocabulary",
+            "the number of times an idea is repeated",
+            "relationships among stages of the argument",
+            "personal reactions to each sentence"
+          ],
+          "options_columns": 1
+        }
+      ]
+    }
+  ]
+}

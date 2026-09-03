@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/english-exam-maker.schema.json",
+  "title": "English Exam Maker Input",
+  "type": "object",
+  "required": ["document", "blocks"],
+  "properties": {
+    "document": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "form": { "type": "string" },
+        "subject": { "type": "string" },
+        "duration_minutes": { "type": "integer", "minimum": 1 },
+        "exam_code": { "type": "string" },
+        "first_page_number": { "type": "integer", "minimum": 1 },
+        "show_header": { "type": "boolean" },
+        "show_candidate_table": { "type": "boolean" },
+        "series_title": { "type": "string" },
+        "series_title_every_page": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "style": {
+      "type": "object",
+      "properties": {
+        "font_family": { "const": "Times New Roman" },
+        "font_size": { "type": "number", "minimum": 7, "maximum": 14 },
+        "leading": { "type": "number", "minimum": 8, "maximum": 18 },
+        "section_font_size": { "type": "number", "minimum": 7, "maximum": 16 },
+        "margin_left_mm": { "type": "number", "minimum": 8, "maximum": 35 },
+        "margin_right_mm": { "type": "number", "minimum": 8, "maximum": 35 },
+        "margin_top_mm": { "type": "number", "minimum": 8, "maximum": 35 },
+        "margin_bottom_mm": { "type": "number", "minimum": 8, "maximum": 35 },
+        "column_gap_mm": { "type": "number", "minimum": 2, "maximum": 15 },
+        "column_rule": { "type": "boolean" },
+        "question_option_gap_pt": { "type": "number", "minimum": 0, "maximum": 15 },
+        "question_gap_pt": { "type": "number", "minimum": 0, "maximum": 20 }
+      },
+      "additionalProperties": false
+    },
+    "blocks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/block" }
+    },
+    "conversion_notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "questionFields": {
+      "type": "object",
+      "required": ["number", "stem", "options"],
+      "properties": {
+        "number": { "oneOf": [{ "type": "integer" }, { "type": "string" }] },
+        "stem": { "type": "string", "minLength": 1 },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "options_columns": { "enum": [1, 2, "auto"] },
+        "start_at_column_top": { "type": "boolean" },
+        "allow_across_columns": { "type": "boolean" }
+      }
+    },
+    "block": {
+      "oneOf": [
+        {
+          "allOf": [
+            { "$ref": "#/$defs/questionFields" },
+            {
+              "properties": { "type": { "const": "question" } },
+              "required": ["type"]
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "section" },
+            "heading": { "type": "string" },
+            "instruction": { "type": "string" },
+            "align": { "enum": ["left", "center"] },
+            "start_at_column_top": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "passage", "questions"],
+          "properties": {
+            "type": { "const": "reading" },
+            "id": { "type": "string" },
+            "heading": { "type": "string" },
+            "instruction": { "type": "string" },
+            "align": { "enum": ["left", "center"] },
+            "start_at_column_top": { "type": "boolean" },
+            "passage": { "type": "string", "minLength": 1 },
+            "questions": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/questionFields" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": { "type": { "const": "page_break" } },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
