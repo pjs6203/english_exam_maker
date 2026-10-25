@@ -7,7 +7,8 @@ from .model import ExamInputError
 
 
 TOKEN_RE = re.compile(r"\[\[([^\]]+)\]\]")
-CJK_RE = re.compile(r"([\u1100-\u11ff\u3130-\u318f\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af]+)")
+CJK_RE = re.compile(r"([\u1100-\u11ff\u3130-\u318f\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af]+|[①-⑩Ⓐ-Ⓩ]+)")
+SYMBOL_RE = re.compile(r"[①-⑩Ⓐ-Ⓩ]+")
 
 
 def to_reportlab_markup(value: str) -> str:
@@ -65,8 +66,11 @@ def _plain_text(value: str) -> str:
         if not part:
             continue
         escaped = html.escape(part).replace("\n", "<br/>")
-        if CJK_RE.fullmatch(part):
+        if SYMBOL_RE.fullmatch(part):
+            pieces.append(f'<font name="ExamSymbols">{escaped}</font>')
+        elif CJK_RE.fullmatch(part):
             pieces.append(f'<font name="ExamKorean">{escaped}</font>')
         else:
             pieces.append(escaped)
     return "".join(pieces)
+

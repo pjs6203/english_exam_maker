@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase.ttfonts import TTFont, TTFError
 
 
 class FontError(RuntimeError):
@@ -29,8 +29,10 @@ def register_exam_fonts() -> FontRegistration:
         return _REGISTRATION
 
     warnings: list[str] = []
+    custom_fonts = Path(os.environ.get("EXAM_FONT_DIR", Path.home() / ".local/share/fonts"))
     roman = _find_family(
         [
+            tuple(str(custom_fonts / name) for name in ("times.ttf", "timesbd.ttf", "timesi.ttf", "timesbi.ttf")) + ("Times New Roman",),
             (
                 r"C:\Windows\Fonts\times.ttf",
                 r"C:\Windows\Fonts\timesbd.ttf",
@@ -52,6 +54,8 @@ def register_exam_fonts() -> FontRegistration:
                 "/usr/share/fonts/truetype/liberation2/LiberationSerif-BoldItalic.ttf",
                 "Liberation Serif fallback",
             ),
+            tuple(f"/usr/share/fonts/truetype/liberation/LiberationSerif-{variant}.ttf"
+                  for variant in ("Regular", "Bold", "Italic", "BoldItalic")) + ("Liberation Serif fallback",),
         ]
     )
     if roman is None:
@@ -63,6 +67,7 @@ def register_exam_fonts() -> FontRegistration:
 
     korean = _find_family(
         [
+            tuple(str(custom_fonts / name) for name in ("NanumGothic.ttf", "NanumGothicBold.ttf", "NanumGothic.ttf", "NanumGothicBold.ttf")) + ("Nanum Gothic",),
             (
                 r"C:\Windows\Fonts\malgun.ttf",
                 r"C:\Windows\Fonts\malgunbd.ttf",
@@ -84,6 +89,13 @@ def register_exam_fonts() -> FontRegistration:
                 "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
                 "Noto Sans CJK",
             ),
+            (
+                "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+                "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+                "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+                "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+                "Nanum Gothic",
+            ),
         ]
     )
     if korean is None:
@@ -94,6 +106,17 @@ def register_exam_fonts() -> FontRegistration:
 
     _register_family("ExamRoman", roman)
     _register_family("ExamKorean", korean)
+    symbols = _find_family([
+        (
+            "/usr/share/fonts/truetype/noto/NotoSansSymbols-Regular.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansSymbols-Bold.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansSymbols-Regular.ttf",
+            "/usr/share/fonts/truetype/noto/NotoSansSymbols-Bold.ttf",
+            "Noto Sans Symbols",
+        ),
+        korean,
+    ])
+    _register_family("ExamSymbols", symbols or korean)
     _REGISTERED = True
     _REGISTRATION = FontRegistration(roman[4], korean[4], warnings)
     return _REGISTRATION
@@ -102,6 +125,13 @@ def register_exam_fonts() -> FontRegistration:
 def _find_family(candidates: list[tuple[str, str, str, str, str]]):
     for candidate in candidates:
         if all(Path(path).exists() for path in candidate[:4]):
+            try:
+                # CJK TTC files may contain PostScript outlines, which ReportLab
+                # cannot embed. Continue to a TrueType fallback in that case.
+                for path in set(candidate[:4]):
+                    TTFont("ExamFontProbe", path)
+            except (TTFError, OSError):
+                continue
             return candidate
     return None
 
@@ -124,3 +154,4 @@ def _register_family(prefix: str, family: tuple[str, str, str, str, str]) -> Non
         italic=f"{prefix}-Italic",
         boldItalic=f"{prefix}-BoldItalic",
     )
+

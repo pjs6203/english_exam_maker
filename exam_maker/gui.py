@@ -96,8 +96,10 @@ class ExamMakerApp:
             raise ExamInputError(
                 f"JSON error at line {exc.lineno}, column {exc.colno}: {exc.msg}"
             ) from exc
-        normalized, _ = normalize_exam(data)
-        return normalized
+        normalize_exam(data)
+        # Keep source JSON and diagnostics intact; the renderer normalizes its
+        # own copy. Saving must not silently rewrite AI-transcribed content.
+        return data
 
     def _load_path(self, path: Path) -> None:
         content = path.read_text(encoding="utf-8-sig")
@@ -204,3 +206,4 @@ def launch_gui() -> None:
     root = tk.Tk()
     ExamMakerApp(root)
     root.mainloop()
+
