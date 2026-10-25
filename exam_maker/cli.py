@@ -52,7 +52,7 @@ def main(argv: list[str] | None = None) -> int:
         result = renderer.render(args.output, layout_manifest_path=args.manifest)
         print(f"Created: {result.output_path}")
         print(f"Pages: {result.page_count}")
-        for warning in result.warnings:
+        for warning in dict.fromkeys(warnings + result.warnings):
             print(f"Warning: {warning}")
         return 0
     except (ExamInputError, LayoutError, OSError) as exc:
@@ -62,3 +62,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

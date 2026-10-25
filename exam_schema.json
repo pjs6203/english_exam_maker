@@ -54,18 +54,105 @@
   "$defs": {
     "questionFields": {
       "type": "object",
-      "required": ["number", "stem", "options"],
+      "required": [
+        "number",
+        "stem"
+      ],
       "properties": {
-        "number": { "oneOf": [{ "type": "integer" }, { "type": "string" }] },
-        "stem": { "type": "string", "minLength": 1 },
+        "number": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "stem": {
+          "type": "string",
+          "minLength": 1
+        },
         "options": {
           "type": "array",
-          "minItems": 2,
-          "items": { "type": "string", "minLength": 1 }
+          "minItems": 0,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Separate choices, without number prefixes. Omit or use [] for numbered underlines; these are already the choices.",
+          "oneOf": [
+            {
+              "maxItems": 0
+            },
+            {
+              "minItems": 2
+            }
+          ]
         },
-        "options_columns": { "enum": [1, 2, "auto"] },
-        "start_at_column_top": { "type": "boolean" },
-        "allow_across_columns": { "type": "boolean" }
+        "options_columns": {
+          "enum": [
+            1,
+            2,
+            "auto"
+          ]
+        },
+        "start_at_column_top": {
+          "type": "boolean"
+        },
+        "allow_across_columns": {
+          "type": "boolean"
+        },
+        "answer_format": {
+          "enum": [
+            "auto",
+            "inline",
+            "options"
+          ],
+          "default": "auto",
+          "description": "auto hides separate options when stem has two or more numbered underlined candidates; inline always omits separate options; options explicitly displays them."
+        },
+        "points": {
+          "oneOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            {
+              "type": "string",
+              "pattern": "^(?:\\d+(?:\\.\\d+)?|\\[\\s*\\d+(?:\\.\\d+)?\\s*점\\s*\\]|\\(\\s*\\d+(?:\\.\\d+)?\\s*점\\s*\\)|\\d+(?:\\.\\d+)?\\s*점)$"
+            }
+          ],
+          "description": "Positive score. Prefer a JSON number. Always printed as [N점]; omitted when unspecified."
+        },
+        "context": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Given paragraph or sentence, displayed in a bordered box before segments."
+        },
+        "segments": {
+          "type": "array",
+          "minItems": 2,
+          "description": "Ordered display of labeled paragraphs, preserving the source order, not the answer order.",
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "text"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "pattern": "^(?:[A-Z]|\\([A-Z]\\)|\\[[A-Z]\\]|[Ⓐ-Ⓩ])$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        }
       }
     },
     "block": {
@@ -118,3 +205,4 @@
     }
   }
 }
+

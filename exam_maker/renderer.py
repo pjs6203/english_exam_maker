@@ -16,7 +16,7 @@ from reportlab.platypus import Flowable, Paragraph, Spacer, Table, TableStyle
 
 from .fonts import register_exam_fonts
 from .markup import to_reportlab_markup
-from .model import choose_option_columns, normalize_exam
+from .model import choose_option_columns, normalize_exam, resolved_answer_format
 
 
 class LayoutError(RuntimeError):
@@ -313,20 +313,55 @@ class ExamRenderer:
             bulletFontName="ExamRoman",
             bulletFontSize=self.body_style.fontSize,
         )
+        stem = str(question["stem"])
+        if "points" in question:
+            stem += f"  [{question['points']}점]"
         flowables: list[Flowable] = [
             Paragraph(
-                to_reportlab_markup(str(question["stem"])),
+                to_reportlab_markup(stem),
                 question_style,
                 bulletText=bullet,
             )
         ]
 
-        options = question.get("options", [])
+        if question.get("context"):
+            flowables.extend([
+                Spacer(0, 5),
+                self._context_box(question["context"], bullet_width + 5),
+            ])
+        if question.get("segments"):
+            for segment in question["segments"]:
+                segment_style = ParagraphStyle(
+                    f"segment-{number}-{segment['label']}",
+                    parent=self.body_style,
+                    leftIndent=bullet_width + 5 + 21,
+                    bulletIndent=bullet_width + 5,
+                    bulletFontName="ExamSymbols" if segment["label"][0] in "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ" else "ExamRoman",
+                    bulletFontSize=self.body_style.fontSize,
+                )
+                flowables.extend([
+                    Spacer(0, 5),
+                    Paragraph(to_reportlab_markup(segment["text"]), segment_style,
+                              bulletText=segment["label"]),
+                ])
+
+        options = question.get("options", []) if resolved_answer_format(question) != "inline" else []
         if options:
             flowables.append(
                 Spacer(0, float(self.config["question_option_gap_pt"]))
             )
             columns = choose_option_columns(question)
+            # Character counts are only a hint. Check actual font widths before
+            # choosing two columns, especially for wide Latin letters and CJK.
+            if columns == 2 and question.get("options_columns", "auto") == "auto":
+                for index, option in enumerate(options):
+                    paragraph = self._option_paragraph(option, index + 1, number,
+                                                       option_base_indent=bullet_width + 5)
+                    _, height = paragraph.wrap(self.column_width / 2 - 2, 100000)
+                    if (height > self.body_style.leading + 0.01
+                            or paragraph.minWidth() + paragraph.style.leftIndent > self.column_width / 2 - 2):
+                        columns = 1
+                        break
             option_paragraphs = [
                 self._option_paragraph(
                     option,
@@ -373,6 +408,21 @@ class ExamRenderer:
             flowables.append(Spacer(0, float(self.config["question_gap_pt"])))
         return flowables
 
+    def _context_box(self, text: str, indent: float) -> Table:
+        box = Table(
+            [["", Paragraph(to_reportlab_markup(text), self.body_style)]],
+            colWidths=[indent, self.column_width - indent],
+            hAlign="LEFT",
+        )
+        box.setStyle(TableStyle([
+            ("BOX", (1, 0), (1, -1), 0.45, colors.HexColor("#777777")),
+            ("LEFTPADDING", (0, 0), (-1, -1), 7),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 7),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ]))
+        return box
+
     def _option_paragraph(
         self,
         value: str,
@@ -383,7 +433,7 @@ class ExamRenderer:
     ) -> Paragraph:
         marker = _choice_marker(index)
         marker_width = pdfmetrics.stringWidth(
-            marker, "ExamKorean", self.body_style.fontSize
+            marker, "ExamSymbols", self.body_style.fontSize
         )
         style = ParagraphStyle(
             f"option-{question_number}-{index}",
@@ -396,7 +446,7 @@ class ExamRenderer:
             # Times New Roman does not contain every circled numeral in all
             # Windows releases. The marker alone uses the Korean fallback;
             # option text remains Times New Roman.
-            bulletFontName="ExamKorean",
+            bulletFontName="ExamSymbols",
             bulletFontSize=self.body_style.fontSize,
         )
         return Paragraph(
@@ -682,3 +732,4 @@ def _choice_marker(index: int) -> str:
     if 1 <= index <= len(circled):
         return circled[index - 1]
     return f"({index})"
+

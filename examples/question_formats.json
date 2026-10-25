@@ -1,0 +1,48 @@
+{
+  "document": {
+    "series_title": "QUESTION FORMAT EXAMPLES",
+    "exam_code": "FORMAT"
+  },
+  "blocks": [
+    {
+      "type": "section",
+      "instruction": "Identify the grammatical error."
+    },
+    {
+      "type": "question",
+      "number": 1,
+      "stem": "The students ①[[u]]was[[/u]] ready, and the teacher ②[[u]]had prepared[[/u]] the lesson.",
+      "answer_format": "inline",
+      "options": [],
+      "points": 2
+    },
+    {
+      "type": "question",
+      "number": 2,
+      "stem": "Choose the best order after the given sentence.",
+      "context": "A seed can remain dormant until conditions become favorable for growth.",
+      "segments": [
+        {
+          "label": "(A)",
+          "text": "Once moisture reaches the seed, its outer coat softens and the embryo begins to develop."
+        },
+        {
+          "label": "(B)",
+          "text": "The young root grows downward, anchoring the plant and absorbing water from the soil."
+        },
+        {
+          "label": "(C)",
+          "text": "A shoot then grows toward the light, allowing the first leaves to begin photosynthesis."
+        }
+      ],
+      "points": 4,
+      "options": [
+        "A-B-C",
+        "A-C-B",
+        "B-A-C",
+        "B-C-A",
+        "C-A-B"
+      ]
+    }
+  ]
+}
